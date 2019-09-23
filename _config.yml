@@ -20,10 +20,11 @@
 
 title: Ethan Fahy
 description: >- # this means to ignore newlines until "baseurl:"
-  Ethan Fahy's software engineering blog
+  Ethan Fahy's Software Engineering Blog
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://ethanfahy.cloud"
 github_username:  ethanfahy
+linkedin_username: ethanfahy
 
 # Build settings
 theme: minima
