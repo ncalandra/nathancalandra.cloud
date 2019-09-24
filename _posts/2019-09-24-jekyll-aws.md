@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Deploy Jekyll Static Websites from GitHub to AWS with a Single CloudFormation Template"
-date:   2019-09-25 09:00:00 -0400
+date:   2019-09-24 11:00:00 -0400
 ---
 This post explains how to automatically deploy a GitHub-hosted Jekyll static website to AWS with a custom domain name provided by Amazon Route 53.  If you're interested in the underlying architecture, read on, but if you're looking for a quick, on-rails solution, everything discussed below has been codified as an AWS CloudFormation template in an associated GitHub project at [https://github.com/ethanfahy/jekyll-aws](https://github.com/ethanfahy/jekyll-aws).
 
