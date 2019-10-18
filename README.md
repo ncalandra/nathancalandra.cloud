@@ -1,2 +1,2 @@
-# ethanfahy.cloud
-Jekyll codebase for the ethanfahy.cloud website.
+# nathancalandra.cloud
+Jekyll codebase for the nathancalandra.cloud website.

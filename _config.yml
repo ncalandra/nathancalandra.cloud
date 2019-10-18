@@ -1,12 +1,11 @@
-title: ethanfahy.cloud
-description: Ethan Fahy's Software Engineering Blog
-author: Ethan Fahy
-email: ethanfahy@gmail.com
+title: nathancalandra.cloud
+description: Nathan Calandra's Website
+author: Nathan Calandra
+email: njcalandra@gmail.com
 baseurl: ""
-url: "https://ethanfahy.cloud"
-github_username: ethanfahy
-twitter_username: EthanHFahy
-linkedin_username: ethanfahy
+url: "https://nathancalandra.cloud"
+github_username: ncalandra
+linkedin_username: nathan-calandra
 
 theme: minima
 plugins:
