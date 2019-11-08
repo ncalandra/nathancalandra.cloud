@@ -34,8 +34,8 @@ function App() {
               </NavDropdown>
             </Nav>
             <Nav>
-              <Nav.Link href="/home">GitHub</Nav.Link>
-              <Nav.Link href="/home">LinkedIn</Nav.Link>
+              <Nav.Link href="https://github.com/ncalandra">GitHub</Nav.Link>
+              <Nav.Link href="https://www.linkedin.com/in/nathan-calandra/">LinkedIn</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
