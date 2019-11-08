@@ -10,3 +10,10 @@
   bottom: 10px;
   z-index: 1000;
 }
+
+.LayerSelector {
+  position: absolute;
+  right: 10px;
+  top: 70px;
+  z-index: 1000;
+}

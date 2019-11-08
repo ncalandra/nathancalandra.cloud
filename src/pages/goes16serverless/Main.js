@@ -1,17 +1,22 @@
 import React, {Component} from 'react';
 import './Main.css';
 
+// Requset Import
+import request from 'request-promise-native';
+
 // OpenLayers imports
 import 'ol/ol.css';
 import OLMap from 'ol/Map';
 import LayerGroup from 'ol/layer/Group';
 import LayerTile from 'ol/layer/Tile';
 import SourceOSM from 'ol/source/OSM';
+import SourceTileWMS from 'ol/source/TileWMS';
 import View from 'ol/View';
 import {fromLonLat} from 'ol/proj';
 
 // Local imports
-import LayersControl from './LayersControl.js'
+import BaseLayersControl from './BaseLayersControl.js';
+import OverlaySelector from './OverlaySelector.js';
 
 class Map extends Component {
 
@@ -29,7 +34,9 @@ class Map extends Component {
             name: 'OSM'
           })
         ]
-      })
+      }),
+      // Empty overlay group
+      overlays: new LayerGroup({})
     };
   }
 
@@ -41,28 +48,68 @@ class Map extends Component {
     let map = new OLMap({
       target: this.refs.mapContainer,
       layers: [
-        this.state.baseLayers
+        this.state.baseLayers,
+        this.state.overlays
       ],
       view: new View({
-        center: fromLonLat([37.41, 8.82]),
+        center: fromLonLat([-75, 30]),
         zoom: 4
       })
     });
 
     this.setState({
       map: map
+    });
+
+    // Get list of layers
+    request({
+      uri: 'https://kxw11f6zn4.execute-api.us-east-1.amazonaws.com/demo/layers',
+      headers: {},
+      json: true
     })
+      .then(response => {
+        let layers = response.map(layer => {
+          return new LayerTile({
+            source: new SourceTileWMS({
+              url: 'https://kxw11f6zn4.execute-api.us-east-1.amazonaws.com/demo/wms',
+              params: {
+                'LAYERS': layer,
+                'STYLES': 'asdf'
+              }
+            }),
+            opacity: 0.75,
+            name: layer,
+            visible: false
+          });
+        });
+        layers[0].setVisible(true);
+
+        const newLayers = this.state.overlays.getLayers().extend(layers);
+        this.state.overlays.setLayers(newLayers);
+        this.setState(this.state);
+      });
   }
 
   updateBaseLayer = (event) => {
     this.state.baseLayers.getLayers().forEach(layer => {
       if (layer.get('name') === event.target.id) {
-        layer.setVisible(event.target.checked)
+        layer.setVisible(event.target.checked);
       } else {
-        layer.setVisible(!event.target.checked)
+        layer.setVisible(!event.target.checked);
       }
-    })
-    this.setState(this.state)
+    });
+    this.setState(this.state);
+  }
+
+  updateOverlay = (event) => {
+    this.state.overlays.getLayers().forEach(layer => {
+      if (layer.get('name') === event.target.value) {
+        layer.setVisible(true);
+      } else {
+        layer.setVisible(false);
+      }
+    });
+    this.setState(this.state);
   }
 
   render() {
@@ -71,19 +118,26 @@ class Map extends Component {
       return {
         name: layer.get('name'),
         visible: layer.getVisible()
-      }
-    })
+      };
+    });
+
+    const overlays = this.state.overlays.getLayers().getArray().map(layer => {
+      return {
+        name: layer.get('name'),
+        visible: layer.getVisible()
+      };
+    });
 
     return (
       <div>
-        <div className="Map" ref="mapContainer">
-          {this.state.showPopup && <div ref="popup" className="ol-popup ">
-              <div className="popup-content" ref="popupContent"></div>
-           </div>}
-        </div>
-        <LayersControl
-          baselayers={baseLayers}
+        <div className="Map" ref="mapContainer" />
+        <BaseLayersControl
+          baseLayers={baseLayers}
           updateBaseLayer={this.updateBaseLayer}
+        />
+        <OverlaySelector
+          layers={overlays}
+          updateOverlay={this.updateOverlay}
         />
       </div>
     );
