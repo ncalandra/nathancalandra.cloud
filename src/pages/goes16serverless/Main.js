@@ -31,16 +31,10 @@ class Map extends Component {
         layers: [
           new LayerTile({
             source: new SourceXYZ({
-              url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.jpg'
-            }),
-            name: 'Imagery'
-          }),
-          new LayerTile({
-            source: new SourceXYZ({
               url: 'https://c.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png'
             }),
             name: 'CartoDB Dark',
-            visible: false
+            visible: true
           }),
           new LayerTile({
             source: new SourceXYZ({
