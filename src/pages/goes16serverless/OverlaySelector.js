@@ -1,7 +1,7 @@
 import React from 'react';
 
 // MomentJS
-import moment from 'moment'
+import moment from 'moment';
 
 // react-bootstrap imports
 import Card from 'react-bootstrap/Card';

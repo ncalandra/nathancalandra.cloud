@@ -78,20 +78,24 @@ class Map extends Component {
       json: true
     })
       .then(response => {
-        let layers = response.map(layer => {
-          return new LayerTile({
-            source: new SourceTileWMS({
-              url: 'https://kxw11f6zn4.execute-api.us-east-1.amazonaws.com/demo/wms',
-              params: {
-                'LAYERS': layer,
-                'STYLES': 'asdf'
-              }
-            }),
-            opacity: 0.5,
-            name: layer,
-            visible: false
+        let layers = response
+          .sort((layer_1, layer_2) => {
+            return layer_1 < layer_2;
+          })
+          .map(layer => {
+            return new LayerTile({
+              source: new SourceTileWMS({
+                url: 'https://kxw11f6zn4.execute-api.us-east-1.amazonaws.com/demo/wms',
+                params: {
+                  'LAYERS': layer,
+                  'STYLES': 'asdf'
+                }
+              }),
+              opacity: 0.5,
+              name: layer,
+              visible: false
+            });
           });
-        });
         layers[0].setVisible(true);
 
         const newLayers = this.state.overlays.getLayers().extend(layers);
