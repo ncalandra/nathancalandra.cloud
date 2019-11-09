@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 function BaseLayersControl(props) {
   return (
     <div className='BaseLayersControl'>
-      <Card style={{ width: '7.5rem' }}>
+      <Card bg="dark" text="white" style={{ width: '10rem' }}>
         <Card.Header style={{ textAlign: 'center', padding: '0' }}>Base Layers</Card.Header>
         <Card.Body style={{ padding: '0.75rem' }}>
           <Form>

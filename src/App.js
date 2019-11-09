@@ -11,12 +11,12 @@ import {
   BrowserRouter as Router,
   Switch,
   Route
-} from "react-router-dom";
+} from 'react-router-dom';
 
 // Local imports
-import Home from './pages/home/Home.js'
-import About from './pages/about/About.js'
-import Goes16serverless from './pages/goes16serverless/Main.js'
+import Home from './pages/home/Home.js';
+import About from './pages/about/About.js';
+import Goes16serverless from './pages/goes16serverless/Main.js';
 
 function App() {
   return (

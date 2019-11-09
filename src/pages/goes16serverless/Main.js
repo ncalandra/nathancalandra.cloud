@@ -9,7 +9,7 @@ import 'ol/ol.css';
 import OLMap from 'ol/Map';
 import LayerGroup from 'ol/layer/Group';
 import LayerTile from 'ol/layer/Tile';
-import SourceOSM from 'ol/source/OSM';
+import SourceXYZ from 'ol/source/XYZ';
 import SourceTileWMS from 'ol/source/TileWMS';
 import View from 'ol/View';
 import {fromLonLat} from 'ol/proj';
@@ -30,8 +30,24 @@ class Map extends Component {
       baseLayers: new LayerGroup({
         layers: [
           new LayerTile({
-            source: new SourceOSM(),
-            name: 'OSM'
+            source: new SourceXYZ({
+              url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.jpg'
+            }),
+            name: 'Imagery'
+          }),
+          new LayerTile({
+            source: new SourceXYZ({
+              url: 'https://c.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png'
+            }),
+            name: 'CartoDB Dark',
+            visible: false
+          }),
+          new LayerTile({
+            source: new SourceXYZ({
+              url: 'https://c.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'
+            }),
+            name: 'CartoDB Light',
+            visible: false
           })
         ]
       }),
@@ -77,7 +93,7 @@ class Map extends Component {
                 'STYLES': 'asdf'
               }
             }),
-            opacity: 0.75,
+            opacity: 0.5,
             name: layer,
             visible: false
           });
