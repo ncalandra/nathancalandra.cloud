@@ -13,7 +13,7 @@ function About() {
         <Container>
           <h1>My Name is Nathan Calandra</h1>
           <p>
-            I could put some text here
+            I am a Software Engineer and Cloud Architect at Atmospheric and Environmental Research.
           </p>
         </Container>
       </Jumbotron>
