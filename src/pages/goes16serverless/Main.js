@@ -88,7 +88,7 @@ class Map extends Component {
                 url: 'https://kxw11f6zn4.execute-api.us-east-1.amazonaws.com/demo/wms',
                 params: {
                   'LAYERS': layer,
-                  'STYLES': 'asdf'
+                  'STYLES': 'cloud_moisture'
                 }
               }),
               opacity: 0.5,
