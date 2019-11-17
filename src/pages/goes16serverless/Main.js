@@ -73,7 +73,7 @@ class Map extends Component {
 
     // Get list of layers
     request({
-      uri: 'https://kxw11f6zn4.execute-api.us-east-1.amazonaws.com/demo/layers',
+      uri: 'https://4emlmvx17b.execute-api.us-east-1.amazonaws.com/demo/layers',
       headers: {},
       json: true
     })
