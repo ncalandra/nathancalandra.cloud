@@ -18,6 +18,9 @@ import {fromLonLat} from 'ol/proj';
 import BaseLayersControl from './BaseLayersControl.js';
 import OverlaySelector from './OverlaySelector.js';
 
+
+const API_URL = 'https://4emlmvx17b.execute-api.us-east-1.amazonaws.com/demo';
+
 class Map extends Component {
 
   constructor(props) {
@@ -73,7 +76,7 @@ class Map extends Component {
 
     // Get list of layers
     request({
-      uri: 'https://kxw11f6zn4.execute-api.us-east-1.amazonaws.com/demo/layers',
+      uri: API_URL + '/layers',
       headers: {},
       json: true
     })
@@ -85,10 +88,10 @@ class Map extends Component {
           .map(layer => {
             return new LayerTile({
               source: new SourceTileWMS({
-                url: 'https://kxw11f6zn4.execute-api.us-east-1.amazonaws.com/demo/wms',
+                url: API_URL + '/wms',
                 params: {
                   'LAYERS': layer,
-                  'STYLES': 'asdf'
+                  'STYLES': 'cloud_moisture'
                 }
               }),
               opacity: 0.5,
