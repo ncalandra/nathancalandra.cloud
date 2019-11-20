@@ -16,6 +16,7 @@ import {
 // Local imports
 import Home from './pages/home/Home.js';
 import About from './pages/about/About.js';
+import Blogs from './pages/blogs/Blogs.js';
 import Goes16serverless from './pages/goes16serverless/Main.js';
 
 function App() {
@@ -46,6 +47,9 @@ function App() {
         <Switch>
           <Route path="/about">
             <About />
+          </Route>
+          <Route path="/blogs">
+            <Blogs />
           </Route>
           <Route path="/goes16-serverless">
             <Goes16serverless />
