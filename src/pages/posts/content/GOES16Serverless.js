@@ -2,23 +2,14 @@ import React from 'react';
 
 // react-bootstrap imports
 import Container from 'react-bootstrap/Container';
-import Image from 'react-bootstrap/Image';
+import Figure from 'react-bootstrap/Figure';
 
 function GOES16Serverless() {
 
   return (
     <Container>
       <h1 className='mt-5'>WMS Serverless</h1>
-
-      <h4>Outline</h4>
-      <ol>
-        <li>Project Overview</li>
-        <li>Storing Geospatial Data on the Cloud</li>
-        <li>Sample Dataset: GOES 16</li>
-        <li>Why WMS?</li>
-        <li>Architecture Design</li>
-        <li>Live Demo</li>
-      </ol>
+      <h6>Last Updated: November 26th, 2019</h6>
 
       <h3>Project Overview</h3>
       <p>
@@ -33,25 +24,80 @@ function GOES16Serverless() {
         When visualizing geospatial data, the entire contents of a file is not usually needed.  For example, when zoomed out on a map the high levels of detail are not loaded.  This increases overall performance and decreases the amount of data downloaded by the end user.  In order to do this two things need to be true.  First, the object store needs to support the ability to read only part of a file.  This can be done in S3 by using an <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html#API_GetObject_RequestSyntax">HTTP range header</a> which provides the means to only download a specific set of bytes from an object.  The second is the file format needs to be streamable.  That is, the bytes in the file need to be arranged in a way that has relevent bytes next to eachother.  One such file format is a <a href="https://www.cogeo.org/">Cloud Optimized GeoTIFF</a> or COG which is a normal GeoTIFF file with a few specific optimizations.  A COG includes internal tiling and overviews that allow for individual tiles or overviews to be read in isolation from the entire file.
       </p>
       <p>
-        <a href="https://gdal.org/">GDAL</a> the open-source geospatial translator utility provides a driver to take full advantage of a COG stored on S3.  The <a href="https://gdal.org/user/virtual_file_systems.html#vsis3-aws-s3-files-random-reading">vsis3</a> driver, manages all of the reading and writing to S3 without downloading the entire file.  Combined with <a href="https://aws.amazon.com/lambda/">AWS Lambda</a> this enables rapid querying of geospatial data.
+        <a href="https://gdal.org/">GDAL</a> the open-source geospatial translator utility provides a driver to take full advantage of a COG stored on S3.  The <a href="https://gdal.org/user/virtual_file_systems.html#vsis3-aws-s3-files-random-reading">vsis3</a> driver, manages all of the reading and writing to S3 without downloading the entire file.  This enables rapid querying of very large geospatial data sets on the cloud.
       </p>
 
-      <h3>Sample Dataset: GOES 16</h3>
+      <h5>Sample Dataset: GOES 16</h5>
       <p>
-        AWS provides a large quantity of geospatial data for free as part of it's <a href="https://aws.amazon.com/earth/">registry of open data</a>.  One of these datasets provides weather imagery from the <a href="https://registry.opendata.aws/noaa-goes/">GOES 16</a> satellite.  GOES 16 is the latest generation weather satellite in geostationary orbit primarily focused on the eastern United States.  It provides near real time data for each of its <a href="https://www.goes-r.gov/spacesegment/ABI-tech-summary.html">16 bands</a> on its primary imager from visible (0.47 &micro;m) to longwave infrared (13.3 &micro;m).  For this project I chose the band 9 (6.9 &micro;m) full disk imagery, which highlights the mid-level water vapor.  Below is a sample image.
+        AWS provides a large quantity of geospatial data for free as part of it's <a href="https://aws.amazon.com/earth/">registry of open data</a>.  One of these datasets provides weather imagery from the <a href="https://registry.opendata.aws/noaa-goes/">GOES 16</a> satellite.  GOES 16 is the latest generation weather satellite in geostationary orbit primarily focused on the eastern United States.  It provides near real time data for each of its <a href="https://www.goes-r.gov/spacesegment/ABI-tech-summary.html">16 bands</a> on its primary imager from visible (0.47 &micro;m) to longwave infrared (13.3 &micro;m).  For this project I chose band 9 (6.9 &micro;m) full disk imagery, which highlights the mid-level water vapor.  Below is a sample image, the black color represents areas with little to no water content and white areas have very high water content.
       </p>
-      <Image src={require('./pictures/CMI_Band9.png')} thumbnail />
+      <Figure>
+        <Figure.Image
+          alt="GOES 16 Band 9 Full Disk Imagery"
+          src={require('./pictures/CMI_Band9.png')}
+        />
+        <Figure.Caption>
+          GOES 16 Band 9 Full Disk Imagery
+        </Figure.Caption>
+      </Figure>
 
-      <h3>Why WMS?</h3>
+      <h3>Serverless Computation</h3>
       <p>
-        The WMS or Web Map Service specification is a designed to provide an easy to use interface for serving map tiles. For example, any tool that allows you to zoom and pan around a map
+        On the cloud there are several layers of computation available ranging from virtual machines (VMs), to containers, and to functions as a service (FaaS).  While VMs and containers are more powerful and customizable than FaaS, they require more configuration and effort to be scalable an fault tolerant.  This project uses a FaaS provided by AWS called <a href="https://aws.amazon.com/lambda/">Lambda</a>.  Lambda functions in this project serve two purposes: geospatial data processing and "glue" code.
+      </p>
+
+      <p>
+        Overall, this project does very little geospatial processing, but some is needed to convert the GOES 16 data into the more sutable format.  This involves translating the file from a <a href="https://www.unidata.ucar.edu/software/netcdf/">NetCDF</a> to a COG and at the same time warping the <a href="https://en.wikipedia.org/wiki/Spatial_reference_system">spatial reference system</a> of the data to one more commonly used by mapping tools.  Additionally, when rendering the data as an image for the map to display, a color map is applied to show a more meaningful image.
+      </p>
+
+      <p>
+        AWS Lambda is also used to stitch a few services togther.  Mainly, it is used to filter the large quantity of data published to the GOES 16 S3 bucket.  Processing all of the available data provided by NOAA on this bucket would become very expensive in a short amount of time.  Therefore, for every file posted to the S3 bucket Lambda first checks to see if it is one that needs to be processed.
       </p>
 
       <h3>Architecture Design</h3>
-      <Image src={require('./pictures/wms_serverless.png')} thumbnail />
+      <p>
+        This project consists of two separate parts.  The first part is responsible for processing the geospatial data as it is available and storing it for later.  This part consists of the "Filter Subscription" and "Process Data File" lambda functions and the "Project Bucket" in the figure below.  The second part provides API access to the data.  It contains the "API Endpoint" and the "Render Image" Lambda function.
+      </p>
+
+      <Figure>
+        <Figure.Image
+          alt="AWS Architecture Diagram"
+          src={require('./pictures/wms_serverless.png')}
+        />
+        <Figure.Caption>
+          AWS Architecture Diagram
+        </Figure.Caption>
+      </Figure>
+
+      <h5>Data Processing</h5>
+      <p>
+        As data is posted to the GOES 16 "Data Source" S3 bucket a message is published to the associated SNS Topic.  This project subscribes to the notifications produced by this topic and for notification recieved the "Filter Subscription" Lambda function is invoked.  The Lambda function's job is to only process files whose name matches a specific pattern.  If a match is found, the "Process Data File" function is invoked.  The data is then processed and stored for later on the project S3 Bucket.
+      </p>
+
+      <h5>WMS API</h5>
+      <p>
+        The WMS API is built using <a href="https://aws.amazon.com/api-gateway/">AWS API GateWay</a> and AWS Lambda.  API Gateway is a fully managed service that provides everything needed to run an API on the cloud.  The API schema itself is defined using <a href="https://swagger.io/docs/specification/about/">Open API 3</a>.  This provides a convienet way to define the API in JSON rather than having to manually create the required AWS resources.
+      </p>
+
+      <p>
+        When the API recieves a request from a user (and after validating the request), it invokes the "Render Image" Lambda function.  This function inherets the request parameters (bounding box, layer name, style, image width and height) and returns a rendered image of the geospatial data stored in the project S3 bucket.
+      </p>
 
       <h3>Live Demo</h3>
-      <p>Go check it out!</p>
+      <p>A live demo version is hosted on <a href="/goes16-serverless">this website</a>.</p>
+
+      <h3>Other similar projects and why mine is different</h3>
+      <p>TODO</p>
+
+      <h3>Host it yourself!</h3>
+      <p>TODO</p>
+
+      <h3>Further Reading</h3>
+      <ol>
+        <li><a href="https://medium.com/radiant-earth-insights/cloud-optimized-geotiff-advances-6b01750eb5ac">Cloud Optimized GeoTIFF Activity</a></li>
+        <li><a href="https://github.com/developmentseed/geolambda">GeoLambda: GDAL in AWS Lambda</a></li>
+      </ol>
+      <br/>
     </Container>
   );
 }
