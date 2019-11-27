@@ -13,18 +13,21 @@ function GOES16Serverless() {
 
       <h3>Project Overview</h3>
       <p>
-        This project is as serverless implementation of the <a href="https://www.opengeospatial.org/standards/wms">WMS</a> specification on AWS. The motivation for developing this project is to provide a highly scalable and cost effective way to visualize raster geospatial data stored on the cloud.  Opposed to classic tools, such as <a href="http://geoserver.org/">GeoServer</a>, <a href="https://mapserver.org/">MapServer</a>, or <a href="https://enterprise.arcgis.com/en/server/">ArcGIS Server</a>, which can require complicated load balanced solutions on virtual machines, this project uses a combination of managed AWS services that can quickly scale to any demand.
+        This project is a serverless implementation of the <a href="https://www.opengeospatial.org/standards/wms">WMS</a> specification on AWS. The motivation for developing this project is to provide a highly scalable and cost effective way to visualize raster geospatial data stored on the cloud.  Opposed to classic tools, such as <a href="http://geoserver.org/">GeoServer</a>, <a href="https://mapserver.org/">MapServer</a>, or <a href="https://enterprise.arcgis.com/en/server/">ArcGIS Server</a>, which can require complicated load balanced solutions on virtual machines, this project uses a combination of managed AWS services that can quickly scale to meet any demand.
+      </p>
+      <p>
+        You can view the source code for this project at <a href="https://github.com/ncalandra/wms-serverless">https://github.com/ncalandra/wms-serverless</a>
       </p>
 
       <h3>Storing Geospatial Data on the Cloud</h3>
       <p>
-        The first problem to be solved is how to store the data.  Storing large amounts of data in a typical file system (<a href="https://en.wikipedia.org/wiki/Block_(data_storage)">block storage</a>) can get expensive quickly.  This is because scaling compute power also requires replicating the data.  Network based file systems, such as <a href="https://en.wikipedia.org/wiki/Network_File_System">NFS</a>, solve that problem but they come at a much higher cost. On the other hand, the most cost effective way to store large amounts of data on the cloud is an <a href="https://en.wikipedia.org/wiki/Object_storage">object store</a>.  Managed object storage services like <a href="https://aws.amazon.com/s3/">AWS S3</a> provide highly scalable solutions, but the main downside here is that files stored as objects cannot be traditionally mounted to an operating system.
+        The first problem to be solved is how to store the data.  Storing large amounts of data in a typical file system (<a href="https://en.wikipedia.org/wiki/Block_(data_storage)">block storage</a>) can get expensive quickly. This is because it is not possible to mount a file system to more than one computer at a time which means that scaling compute power also requires replicating the data.  Network based file systems, such as <a href="https://en.wikipedia.org/wiki/Network_File_System">NFS</a>, solve that problem but they come at a much higher cost. The most cost effective way to store large amounts of data on the cloud is an <a href="https://en.wikipedia.org/wiki/Object_storage">object store</a>.  Managed object storage services like <a href="https://aws.amazon.com/s3/">AWS S3</a> provide highly scalable solutions, but the main downside here is that files stored as objects cannot be traditionally mounted to an operating system.
       </p>
       <p>
-        When visualizing geospatial data, the entire contents of a file is not usually needed.  For example, when zoomed out on a map the high levels of detail are not loaded.  This increases overall performance and decreases the amount of data downloaded by the end user.  In order to do this two things need to be true.  First, the object store needs to support the ability to read only part of a file.  This can be done in S3 by using an <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html#API_GetObject_RequestSyntax">HTTP range header</a> which provides the means to only download a specific set of bytes from an object.  The second is the file format needs to be streamable.  That is, the bytes in the file need to be arranged in a way that has relevent bytes next to eachother.  One such file format is a <a href="https://www.cogeo.org/">Cloud Optimized GeoTIFF</a> or COG which is a normal GeoTIFF file with a few specific optimizations.  A COG includes internal tiling and overviews that allow for individual tiles or overviews to be read in isolation from the entire file.
+        When visualizing geospatial data, the entire contents of a file is not usually needed.  For example, when zoomed out on a map the high levels of detail are not loaded.  This increases overall performance and decreases the amount of data downloaded by the end user.  In order to do this two things need to be true.  First, the object store needs to support the ability to read only part of a file.  This can be done in S3 by using an <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html#API_GetObject_RequestSyntax">HTTP range header</a> which provides the means to only download a specific set of bytes from an object.  The second is the file format needs to be streamable.  That is, the metadata needs to be at the front of the file and the data needs to be arranged in a way that has related bytes next to each other.  One such file format is a <a href="https://www.cogeo.org/">Cloud Optimized GeoTIFF</a> or COG which is a normal GeoTIFF file with a some specific optimizations.  A COG includes internal tiling and overviews that allow for individual tiles or overviews to be read in isolation from the entire file.
       </p>
       <p>
-        <a href="https://gdal.org/">GDAL</a> the open-source geospatial translator utility provides a driver to take full advantage of a COG stored on S3.  The <a href="https://gdal.org/user/virtual_file_systems.html#vsis3-aws-s3-files-random-reading">vsis3</a> driver, manages all of the reading and writing to S3 without downloading the entire file.  This enables rapid querying of very large geospatial data sets on the cloud.
+        <a href="https://gdal.org/">GDAL</a>, the open-source geospatial data translator utility, provides a driver to take full advantage of a COG stored on S3.  The <a href="https://gdal.org/user/virtual_file_systems.html#vsis3-aws-s3-files-random-reading">vsis3</a> driver, manages all of the reading and writing to S3 without downloading the entire file.  This enables rapid querying of very large geospatial data sets on the cloud.
       </p>
 
       <h5>Sample Dataset: GOES 16</h5>
@@ -47,11 +50,11 @@ function GOES16Serverless() {
       </p>
 
       <p>
-        Overall, this project does very little geospatial processing, but some is needed to convert the GOES 16 data into the more sutable format.  This involves translating the file from a <a href="https://www.unidata.ucar.edu/software/netcdf/">NetCDF</a> to a COG and at the same time warping the <a href="https://en.wikipedia.org/wiki/Spatial_reference_system">spatial reference system</a> of the data to one more commonly used by mapping tools.  Additionally, when rendering the data as an image for the map to display, a color map is applied to show a more meaningful image.
+        Overall, this project does very little geospatial processing, but some is needed to convert the GOES 16 data into the more suitable format for display on a map.  This involves translating the file from a <a href="https://www.unidata.ucar.edu/software/netcdf/">NetCDF</a> to a COG and at the same time warping the <a href="https://en.wikipedia.org/wiki/Spatial_reference_system">spatial reference system</a> of the data to one more commonly used by mapping tools.  Additionally, when rendering the data as an image for the map to display, a color map is applied to show a more meaningful image.
       </p>
 
       <p>
-        AWS Lambda is also used to stitch a few services togther.  Mainly, it is used to filter the large quantity of data published to the GOES 16 S3 bucket.  Processing all of the available data provided by NOAA on this bucket would become very expensive in a short amount of time.  Therefore, for every file posted to the S3 bucket, Lambda first checks to see if it is one that needs to be processed.
+        AWS Lambda is also used to stitch a few services together.  Mainly, it is used to filter the large quantity of data published to the GOES 16 S3 bucket.  Processing all the available data provided by NOAA on this bucket would become very expensive in a short amount of time.  Therefore, for every file posted to the S3 bucket, Lambda first checks to see if it is one that needs to be processed.
       </p>
 
       <h3>Architecture Design</h3>
@@ -71,16 +74,16 @@ function GOES16Serverless() {
 
       <h5>Data Processing</h5>
       <p>
-        As data is posted to the GOES 16 "Data Source" S3 bucket a message is published to the associated SNS Topic.  This project subscribes to the notifications produced by this topic and for notification recieved the "Filter Subscription" Lambda function is invoked.  The Lambda function's job is to only process files whose name matches a specific pattern.  If a match is found, the "Process Data File" function is invoked.  The data is then processed and stored for later on the project S3 Bucket.
+        As data is posted to the GOES 16 "Data Source" S3 bucket a message is published to the associated SNS Topic.  This project subscribes to the notifications produced by this topic and for each received message the "Filter Subscription" Lambda function is invoked.  The Lambda function's job is to only process files whose name matches a specific pattern.  If a match is found, the "Process Data File" function is invoked.  The data is then processed and stored for later the project S3 Bucket.
       </p>
 
       <h5>WMS API</h5>
       <p>
-        The WMS API is built using <a href="https://aws.amazon.com/api-gateway/">AWS API GateWay</a> and AWS Lambda.  API Gateway is a fully managed service that provides everything needed to run an API on the cloud.  The API schema itself is defined using <a href="https://swagger.io/docs/specification/about/">Open API 3</a>.  This provides a convienet way to define the API in JSON rather than having to manually create the required AWS resources.
+        The WMS API is built using <a href="https://aws.amazon.com/api-gateway/">AWS API GateWay</a> and AWS Lambda.  API Gateway is a fully managed service that provides everything needed to run an API on the cloud.  The API schema itself is defined using <a href="https://swagger.io/docs/specification/about/">OpenAPI 3</a>, which provides a convenient way to define the API in JSON.
       </p>
 
       <p>
-        When the API recieves a request from a user (and after validating the request), it invokes the "Render Image" Lambda function.  This function inherets the request parameters (bounding box, layer name, style, image width and height) and returns a rendered image of the geospatial data stored in the project S3 bucket.
+        When the API receives a request from a user (and after validating the request), it invokes the "Render Image" Lambda function.  This function inherits the request parameters (bounding box, layer name, style, image width and height) and returns a rendered image of the geospatial data stored in the project S3 bucket.
       </p>
 
       <h3>Live Demo</h3>
