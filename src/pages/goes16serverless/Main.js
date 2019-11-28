@@ -21,6 +21,12 @@ import OverlaySelector from './OverlaySelector.js';
 
 const API_URL = 'https://4emlmvx17b.execute-api.us-east-1.amazonaws.com/demo';
 
+
+const styleMap = {
+  'ABI-L2-CMIPF-M6C01': 'aerosols',
+  'ABI-L2-CMIPF-M6C09': 'cloud_moisture'
+};
+
 class Map extends Component {
 
   constructor(props) {
@@ -99,7 +105,7 @@ class Map extends Component {
                 url: API_URL + '/wms',
                 params: {
                   'LAYERS': layer,
-                  'STYLES': 'cloud_moisture'
+                  'STYLES': styleMap[product]
                 }
               }),
               opacity: 0.5,
