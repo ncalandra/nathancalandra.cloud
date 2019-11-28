@@ -49,7 +49,9 @@ class Map extends Component {
         ]
       }),
       // Empty overlay group
-      overlays: new LayerGroup({})
+      overlays: new LayerGroup({}),
+      products: [],
+      selectedProduct: null
     };
   }
 
@@ -81,11 +83,17 @@ class Map extends Component {
       json: true
     })
       .then(response => {
+        let products = [...this.state.products];
         let layers = response
           .sort((layer_1, layer_2) => {
             return layer_1 < layer_2;
           })
           .map(layer => {
+            const product = layer.split('/').slice(-1)[0].split('_')[1];
+            if (!products.includes(product)) {
+              products.push(product);
+            }
+
             return new LayerTile({
               source: new SourceTileWMS({
                 url: API_URL + '/wms',
@@ -103,7 +111,11 @@ class Map extends Component {
 
         const newLayers = this.state.overlays.getLayers().extend(layers);
         this.state.overlays.setLayers(newLayers);
-        this.setState(this.state);
+        this.setState({
+          ...this.state,
+          products: products,
+          selectedProduct: products[0]
+        });
       });
   }
 
@@ -116,6 +128,12 @@ class Map extends Component {
       }
     });
     this.setState(this.state);
+  }
+
+  updateProduct = (event) => {
+    this.setState({
+      selectedProduct: event.target.value
+    });
   }
 
   updateOverlay = (event) => {
@@ -138,12 +156,16 @@ class Map extends Component {
       };
     });
 
-    const overlays = this.state.overlays.getLayers().getArray().map(layer => {
-      return {
-        name: layer.get('name'),
-        visible: layer.getVisible()
-      };
-    });
+    const overlays = this.state.overlays.getLayers().getArray()
+      .filter(layer => {
+        return layer.get('name').includes(this.state.selectedProduct);
+      })
+      .map(layer => {
+        return {
+          name: layer.get('name'),
+          visible: layer.getVisible()
+        };
+      });
 
     return (
       <div>
@@ -153,7 +175,9 @@ class Map extends Component {
           updateBaseLayer={this.updateBaseLayer}
         />
         <OverlaySelector
+          products={this.state.products}
           layers={overlays}
+          updateProduct={this.updateProduct}
           updateOverlay={this.updateOverlay}
         />
       </div>

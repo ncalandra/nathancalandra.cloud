@@ -19,26 +19,42 @@ function OverlaySelector(props) {
             <Card.Header style={{ textAlign: 'center', padding: '0' }}>Overlays</Card.Header>
             <Card.Body style={{ padding: '0.75rem' }}>
               <Form>
-                <Form.Control
-                  as="select"
-                  onChange={props.updateOverlay}
-                >
-                  {props.layers.map(layer => {
+                <Form.Row>
+                  <Col>
+                    <Form.Control
+                      as="select"
+                      onChange={props.updateProduct}
+                    >
+                      {props.products.map(product => {
+                        return (
+                          <option key={product} value={product}>
+                            {product}
+                          </option>
+                        );
+                      })}
+                    </Form.Control>
+                  </Col>
+                  <Col>
+                    <Form.Control
+                      as="select"
+                      onChange={props.updateOverlay}
+                    >
+                      {props.layers.map(layer => {
 
-                    const time = moment.utc(
-                      layer.name.split('_')[4].slice(1),
-                      'YYYYDDDhhmmss'
-                    ).local().format('LLL');
+                        const time = moment.utc(
+                          layer.name.split('_')[4].slice(1),
+                          'YYYYDDDhhmmss'
+                        ).local().format('lll');
 
-                    const product = layer.name.split('/').slice(-1)[0].split('_')[1];
-
-                    return (
-                      <option key={layer.name} value={layer.name}>
-                        {product + ': ' + time}
-                      </option>
-                    );
-                  })}
-                </Form.Control>
+                        return (
+                          <option key={layer.name} value={layer.name}>
+                            {time}
+                          </option>
+                        );
+                      })}
+                    </Form.Control>
+                  </Col>
+                </Form.Row>
               </Form>
             </Card.Body>
           </Card>
