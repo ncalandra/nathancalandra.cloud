@@ -108,7 +108,7 @@ class Map extends Component {
                   'STYLES': styleMap[product]
                 }
               }),
-              opacity: 0.5,
+              opacity: 0.9,
               name: layer,
               visible: false
             });

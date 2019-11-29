@@ -89,12 +89,6 @@ function GOES16Serverless() {
       <h3>Live Demo</h3>
       <p>A live demo version is hosted on <a href="/goes16-serverless">this website</a>.</p>
 
-      <h3>Other similar projects and why mine is different</h3>
-      <p>TODO</p>
-
-      <h3>Host it yourself!</h3>
-      <p>TODO</p>
-
       <h3>Further Reading</h3>
       <ol>
         <li><a href="https://medium.com/radiant-earth-insights/cloud-optimized-geotiff-advances-6b01750eb5ac">Cloud Optimized GeoTIFF Activity</a></li>

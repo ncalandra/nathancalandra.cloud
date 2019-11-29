@@ -34,7 +34,7 @@ function Home() {
             <Card.Footer className="text-center">
               <ButtonGroup aria-label="Links">
                 <Button href="/goes16-serverless" variant="outline-secondary">Check it out</Button>
-                <Button disabled={true} href="/posts#goes16-serverless" variant="outline-secondary">Post</Button>
+                <Button href="/posts#goes16-serverless" variant="outline-secondary">Post</Button>
                 <Button href="https://github.com/ncalandra/wms-serverless" variant="outline-secondary">Github</Button>
               </ButtonGroup>
             </Card.Footer>

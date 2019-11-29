@@ -29,7 +29,6 @@ function App() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
               <Nav.Link href="/home">Home</Nav.Link>
-              <Nav.Link disabled={true} href="/home">Posts</Nav.Link>
               <Nav.Link href="/about">About Me</Nav.Link>
               <NavDropdown title="Projects" id="basic-nav-dropdown">
                 <NavDropdown.Item href="/goes16-serverless">GOES 16 Serverless</NavDropdown.Item>
