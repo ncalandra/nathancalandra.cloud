@@ -111,6 +111,7 @@ class Map extends Component {
               }),
               opacity: 0.9,
               name: layer,
+              product: product,
               visible: false
             });
           });
@@ -138,6 +139,17 @@ class Map extends Component {
   }
 
   updateProduct = (event) => {
+    // Turn on most recent layer for this product
+    let visible = true;
+    this.state.overlays.getLayers().forEach(layer => {
+      if (layer.get('product') === event.target.value && visible) {
+        layer.setVisible(true);
+        visible = false;
+      } else {
+        layer.setVisible(false);
+      }
+    });
+
     this.setState({
       selectedProduct: event.target.value
     });
@@ -165,7 +177,7 @@ class Map extends Component {
 
     const overlays = this.state.overlays.getLayers().getArray()
       .filter(layer => {
-        return layer.get('name').includes(this.state.selectedProduct);
+        return layer.get('product') === this.state.selectedProduct;
       })
       .map(layer => {
         return {
