@@ -24,7 +24,8 @@ const API_URL = 'https://4emlmvx17b.execute-api.us-east-1.amazonaws.com/demo';
 
 const styleMap = {
   'ABI-L2-CMIPF-M6C01': 'aerosols',
-  'ABI-L2-CMIPF-M6C09': 'cloud_moisture'
+  'ABI-L2-CMIPF-M6C09': 'cloud_moisture',
+  'ABI-L2-CMIPC-M6C09': 'cloud_moisture'
 };
 
 class Map extends Component {
