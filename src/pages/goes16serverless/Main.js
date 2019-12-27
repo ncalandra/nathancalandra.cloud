@@ -155,9 +155,9 @@ class Map extends Component {
     });
   }
 
-  updateOverlay = (event) => {
+  updateOverlay = (layername) => {
     this.state.overlays.getLayers().forEach(layer => {
-      if (layer.get('name') === event.target.value) {
+      if (layer.get('name') === layername) {
         layer.setVisible(true);
       } else {
         layer.setVisible(false);
