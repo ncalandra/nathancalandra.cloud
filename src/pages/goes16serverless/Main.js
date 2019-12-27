@@ -74,8 +74,8 @@ class Map extends Component {
         this.state.overlays
       ],
       view: new View({
-        center: fromLonLat([-75, 30]),
-        zoom: 4
+        center: fromLonLat([-90, 38]),
+        zoom: 5
       })
     });
 
