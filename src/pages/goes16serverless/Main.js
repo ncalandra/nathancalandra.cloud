@@ -9,10 +9,13 @@ import 'ol/ol.css';
 import OLMap from 'ol/Map';
 import LayerGroup from 'ol/layer/Group';
 import LayerTile from 'ol/layer/Tile';
+import LayerVector from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
 import SourceXYZ from 'ol/source/XYZ';
 import SourceTileWMS from 'ol/source/TileWMS';
 import View from 'ol/View';
 import {fromLonLat} from 'ol/proj';
+import Draw, {createBox} from 'ol/interaction/Draw.js';
 
 // Local imports
 import BaseLayersControl from './BaseLayersControl.js';
@@ -57,8 +60,17 @@ class Map extends Component {
       }),
       // Empty overlay group
       overlays: new LayerGroup({}),
+      // Empty draw layer
+      drawLayer: new LayerVector({
+        source: new VectorSource({
+          features: []
+        }),
+      }),
+      // coverage drawn
+      download: false,
       products: [],
-      selectedProduct: null
+      selectedProduct: null,
+      selectedLayer: null,
     };
   }
 
@@ -71,7 +83,8 @@ class Map extends Component {
       target: this.refs.mapContainer,
       layers: [
         this.state.baseLayers,
-        this.state.overlays
+        this.state.overlays,
+        this.state.drawLayer
       ],
       view: new View({
         center: fromLonLat([-90, 38]),
@@ -80,7 +93,7 @@ class Map extends Component {
     });
 
     this.setState({
-      map: map
+      map: map,
     });
 
     // Get list of layers
@@ -119,10 +132,21 @@ class Map extends Component {
 
         const newLayers = this.state.overlays.getLayers().extend(layers);
         this.state.overlays.setLayers(newLayers);
+
+        // Set initial layer
+        const selectedLayer = newLayers.getArray()
+          .filter(layer => {
+            return layer.get('product') === products[0];
+          })
+          .map(layer => {
+            return layer.get('name');
+          })[0];
+
         this.setState({
           ...this.state,
           products: products,
-          selectedProduct: products[0]
+          selectedProduct: products[0],
+          selectedLayer: selectedLayer,
         });
       });
   }
@@ -163,7 +187,63 @@ class Map extends Component {
         layer.setVisible(false);
       }
     });
-    this.setState(this.state);
+    this.setState({
+      selectedLayer: layername
+    });
+  }
+
+  drawCoverage = () => {
+    // Clear old layers
+    this.state.drawLayer.setSource(new VectorSource({features: []}));
+
+    // Add draw interactions & handle draw end events
+    let drawCoverageInteraction = new Draw({
+      source: this.state.drawLayer.getSource(),
+      type: 'Circle',
+      geometryFunction: createBox(),
+    });
+    drawCoverageInteraction.on('drawend', (event) => {
+      this.state.map.removeInteraction(drawCoverageInteraction);
+      this.setState({download: true});
+    });
+
+    this.state.map.addInteraction(drawCoverageInteraction);
+  }
+
+  downloadData = () => {
+
+    const feature =  this.state.drawLayer.getSource().getFeatures()[0];
+    const bounds = feature.getGeometry().getExtent();
+
+    const xdiff = Math.abs(bounds[0] - bounds[2]);
+    const ydiff = Math.abs(bounds[1] - bounds[3]);
+
+    console.log(feature.getGeometry().getExtent());
+
+    axios({
+      method: 'get',
+      url: API_URL + '/wms?' +
+        'SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=false&' +
+        'LAYERS=' + this.state.selectedLayer + '&' +
+        'STYLES=cloud_moisture&' +
+        'WIDTH=' + Math.round(xdiff / ydiff * 512) + '&HEIGHT=' + 512 + '&' +
+        'CRS=EPSG:3857&' +
+        'BBOX=' + bounds.join(','),
+      headers: {
+        'Accept': 'image/webp,*/*'
+      },
+      responseType: 'arraybuffer',
+    })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'image.png'); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+      });
+    this.setState({download: false});
+    this.state.drawLayer.setSource(new VectorSource({features: []}));
   }
 
   render() {
@@ -187,7 +267,7 @@ class Map extends Component {
       });
 
     return (
-      <div>
+      <div style={{overflow: 'hidden'}}>
         <div className="Map" ref="mapContainer" />
         <BaseLayersControl
           baseLayers={baseLayers}
@@ -195,9 +275,12 @@ class Map extends Component {
         />
         <OverlaySelector
           products={this.state.products}
+          download={this.state.download}
           layers={overlays}
           updateProduct={this.updateProduct}
           updateOverlay={this.updateOverlay}
+          drawCoverage={this.drawCoverage}
+          downloadData={this.downloadData}
         />
       </div>
     );
