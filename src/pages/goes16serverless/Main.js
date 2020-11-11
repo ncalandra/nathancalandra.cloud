@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import './Main.css';
 
-// Requset Import
-import request from 'request-promise-native';
+// Axois Import
+import axios from 'axios';
 
 // OpenLayers imports
 import 'ol/ol.css';
@@ -84,14 +84,14 @@ class Map extends Component {
     });
 
     // Get list of layers
-    request({
-      uri: API_URL + '/layers',
+    axios({
+      method: 'get',
+      url: API_URL + '/layers',
       headers: {},
-      json: true
     })
       .then(response => {
         let products = [...this.state.products];
-        let layers = response
+        let layers = response.data
           .sort((layer_1, layer_2) => {
             return layer_1 < layer_2;
           })

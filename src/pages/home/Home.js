@@ -10,6 +10,10 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Navbar from 'react-bootstrap/Navbar';
 
+// Images
+import goes16 from './pictures/goes16.png';
+import blank from './pictures/blank.png';
+
 function Home() {
   return (
     <div className="Home">
@@ -24,7 +28,7 @@ function Home() {
       <Container>
         <CardDeck>
           <Card bg="light">
-            <Card.Img variant="top" src={require('./pictures/goes16.png')} />
+            <Card.Img variant="top" src={goes16} />
             <Card.Header>GOES 16 Serverless</Card.Header>
             <Card.Body>
               <Card.Text>
@@ -40,7 +44,7 @@ function Home() {
             </Card.Footer>
           </Card>
           <Card bg="light">
-            <Card.Img variant="top" src={require('./pictures/blank.png')} />
+            <Card.Img variant="top" src={blank} />
             <Card.Header>This Website</Card.Header>
             <Card.Body>
               <Card.Text>

@@ -4,6 +4,10 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Figure from 'react-bootstrap/Figure';
 
+// Images
+import cmi_band9 from './pictures/CMI_Band9.png';
+import wms_serverless from './pictures/wms_serverless.png';
+
 function GOES16Serverless() {
 
   return (
@@ -37,7 +41,7 @@ function GOES16Serverless() {
       <Figure>
         <Figure.Image
           alt="GOES 16 Band 9 Full Disk Imagery"
-          src={require('./pictures/CMI_Band9.png')}
+          src={cmi_band9}
         />
         <Figure.Caption>
           GOES 16 Band 9 Full Disk Imagery
@@ -65,7 +69,7 @@ function GOES16Serverless() {
       <Figure>
         <Figure.Image
           alt="AWS Architecture Diagram"
-          src={require('./pictures/wms_serverless.png')}
+          src={wms_serverless}
         />
         <Figure.Caption>
           AWS Architecture Diagram
