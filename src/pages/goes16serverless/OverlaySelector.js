@@ -78,6 +78,7 @@ function OverlaySelector(props) {
                           <Form.Control
                             as="select"
                             onChange={props.updateProduct}
+                            custom
                           >
                             {props.products.map(product => {
                               return (
@@ -92,7 +93,7 @@ function OverlaySelector(props) {
                           <Button
                             variant="secondary"
                             onClick={
-                              () => {props.download ? props.downloadData() : props.drawCoverage();}
+                              () => {props.download ? props.openDownloadModal() : props.drawCoverage();}
                             }
                           >
                             <i className={props.download ? 'fas fa-download' : 'fas fa-draw-polygon'}></i>
@@ -103,7 +104,7 @@ function OverlaySelector(props) {
                         <Col xl="6" lg="6" md="6" sm="8" xs="12">
                           <input
                             type="range"
-                            className="slider"
+                            className="slider rtl"
                             value={selectedLayer}
                             onChange={
                               e => {
