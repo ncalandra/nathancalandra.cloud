@@ -18,8 +18,6 @@ function DownloadModal(props) {
   const layers = props.layers.map(layer => layer.name).reverse();
   const layerIndex = layers.length - props.layers.findIndex(layer => layer.visible) - 1;
 
-  console.log(layers.length, layerIndex);
-
   return (
     <Modal
       show={props.show}
