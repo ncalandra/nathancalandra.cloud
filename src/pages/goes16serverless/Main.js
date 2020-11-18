@@ -331,7 +331,11 @@ class Map extends Component {
         />
         {this.state.selectedLayer && <DownloadModal
           show={this.state.showModal}
-          onHide={() => this.setState({showModal: false})}
+          onHide={() => {
+            // Clear selected area
+            this.state.drawLayer.setSource(new VectorSource({features: []}));
+            this.setState({showModal: false, download: false});
+          }}
           selectedProduct={this.state.selectedProduct}
           selectedLayer={this.state.selectedLayer}
           downloadImage={this.downloadImage}
