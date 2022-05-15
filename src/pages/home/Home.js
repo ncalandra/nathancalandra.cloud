@@ -2,9 +2,8 @@ import React from 'react';
 import './Home.css';
 
 // react-bootstrap imports
-import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
-import CardDeck from 'react-bootstrap/CardDeck';
+import CardGroup from 'react-bootstrap/CardGroup';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -17,16 +16,16 @@ import blank from './pictures/blank.png';
 function Home() {
   return (
     <div className="Home">
-      <Jumbotron fluid>
+      <div style={{padding: '2rem 1rem', marginBottom: '2rem', backgroundColor: '#e9ecef', borderRadius: '.3rem'}}>
         <Container>
           <h1>Welcome!</h1>
           <p>
             I use this website to host my projects.
           </p>
         </Container>
-      </Jumbotron>
+      </div>
       <Container>
-        <CardDeck>
+        <CardGroup>
           <Card bg="light">
             <Card.Img variant="top" src={goes16} />
             <Card.Header>GOES 16 Serverless</Card.Header>
@@ -51,14 +50,14 @@ function Home() {
                 A react app hosted on AWS.  Powered by AWS S3, Route53, and CloudFront.  Based on a project by Ethan Fahy.
               </Card.Text>
             </Card.Body>
-            <Card.Footer  className="text-center">
+            <Card.Footer className="text-center">
               <ButtonGroup aria-label="Links">
                 <Button href="https://ethanfahy.cloud/2019/09/24/jekyll-aws.html" variant="outline-secondary">Check it out</Button>
                 <Button href="https://github.com/ethanfahy/jekyll-aws" variant="outline-secondary">Github</Button>
               </ButtonGroup>
             </Card.Footer>
           </Card>
-        </CardDeck>
+        </CardGroup>
       </Container>
       <Navbar fixed="bottom" bg="dark" variant="dark" />
     </div>

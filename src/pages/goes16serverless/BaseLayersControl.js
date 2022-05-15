@@ -14,8 +14,7 @@ function BaseLayersControl(props) {
             {props.baseLayers.map(layer => {
               return (
                 <Form.Check
-                  custom
-                  type='radio'
+                  type='switch'
                   id={layer.name}
                   key={layer.name}
                   label={layer.name}

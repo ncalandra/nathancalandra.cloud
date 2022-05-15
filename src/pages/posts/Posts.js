@@ -9,9 +9,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import GOES16Serverless from './content/GOES16Serverless.js';
 
 function Posts() {
-
-  console.log(window.location.hash.split('#')[1]);
-
   const hash = window.location.hash.split('#')[1];
   let content = (
     <Container>

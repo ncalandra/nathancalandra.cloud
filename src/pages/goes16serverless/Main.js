@@ -19,9 +19,9 @@ import Draw, {createBox} from 'ol/interaction/Draw.js';
 
 // Local imports
 import BaseLayersControl from './BaseLayersControl.js';
-import DownloadModal from './DownloadModal.js';
+// import DownloadModal from './DownloadModal.js';
 import OverlaySelector from './OverlaySelector.js';
-import gifConverter from './gifConverter.js';
+// import gifConverter from './gifConverter.js';
 
 const API_URL = 'https://4emlmvx17b.execute-api.us-east-1.amazonaws.com/demo';
 
@@ -163,7 +163,7 @@ class Map extends Component {
       }
     });
     this.setState(this.state);
-  }
+  };
 
   updateProduct = (event) => {
     // Turn on most recent layer for this product
@@ -180,7 +180,7 @@ class Map extends Component {
     this.setState({
       selectedProduct: event.target.value
     });
-  }
+  };
 
   updateOverlay = (layername) => {
     this.state.overlays.getLayers().forEach(layer => {
@@ -193,7 +193,7 @@ class Map extends Component {
     this.setState({
       selectedLayer: layername
     });
-  }
+  };
 
   drawCoverage = () => {
     // Clear old layers
@@ -211,44 +211,44 @@ class Map extends Component {
     });
 
     this.state.map.addInteraction(drawCoverageInteraction);
-  }
+  };
 
   openDownloadModal = () => {
     this.setState({showModal: true});
-  }
+  };
 
-  downloadAnimation = (layers) => {
-    const feature =  this.state.drawLayer.getSource().getFeatures()[0];
-    const bounds = feature.getGeometry().getExtent();
-
-    const xdiff = Math.abs(bounds[0] - bounds[2]);
-    const ydiff = Math.abs(bounds[1] - bounds[3]);
-
-    const height = 512;
-    const width = Math.round(xdiff / ydiff * height);
-
-    this.setState({loading: true});
-    let urls = layers.map(layer => {
-      return API_URL + '/wms?' +
-        'SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=false&' +
-        'LAYERS=' + layer + '&' +
-        'STYLES=cloud_moisture&' +
-        'WIDTH=' + width + '&HEIGHT=' + height + '&' +
-        'CRS=EPSG:3857&' +
-        'BBOX=' + bounds.join(',');
-    });
-
-    gifConverter(urls, width, height)
-      .then(gif => {
-        const url = window.URL.createObjectURL(new Blob([gif.out.getData()]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'animation.gif');
-        document.body.appendChild(link);
-        link.click();
-      })
-      .then(() => this.setState({loading: false}));
-  }
+  // downloadAnimation = (layers) => {
+  //   const feature =  this.state.drawLayer.getSource().getFeatures()[0];
+  //   const bounds = feature.getGeometry().getExtent();
+  //
+  //   const xdiff = Math.abs(bounds[0] - bounds[2]);
+  //   const ydiff = Math.abs(bounds[1] - bounds[3]);
+  //
+  //   const height = 512;
+  //   const width = Math.round(xdiff / ydiff * height);
+  //
+  //   this.setState({loading: true});
+  //   let urls = layers.map(layer => {
+  //     return API_URL + '/wms?' +
+  //       'SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=false&' +
+  //       'LAYERS=' + layer + '&' +
+  //       'STYLES=cloud_moisture&' +
+  //       'WIDTH=' + width + '&HEIGHT=' + height + '&' +
+  //       'CRS=EPSG:3857&' +
+  //       'BBOX=' + bounds.join(',');
+  //   });
+  //
+  //   gifConverter(urls, width, height)
+  //     .then(gif => {
+  //       const url = window.URL.createObjectURL(new Blob([gif.out.getData()]));
+  //       const link = document.createElement('a');
+  //       link.href = url;
+  //       link.setAttribute('download', 'animation.gif');
+  //       document.body.appendChild(link);
+  //       link.click();
+  //     })
+  //     .then(() => this.setState({loading: false}));
+  // };
 
   downloadImage = () => {
     const feature =  this.state.drawLayer.getSource().getFeatures()[0];
@@ -274,7 +274,7 @@ class Map extends Component {
 
     // this.setState({download: false});
     // this.state.drawLayer.setSource(new VectorSource({features: []}));
-  }
+  };
 
   fetchWMSImage = (layer, bbox, width, height) => {
     return axios({
@@ -287,11 +287,11 @@ class Map extends Component {
         'CRS=EPSG:3857&' +
         'BBOX=' + bbox.join(','),
       headers: {
-        'Accept': 'image/webp,*/*'
+        'Accept': 'image/webp,image/png,*/*'
       },
       responseType: 'arraybuffer',
     });
-  }
+  };
 
   render() {
 
@@ -329,20 +329,20 @@ class Map extends Component {
           drawCoverage={this.drawCoverage}
           openDownloadModal={this.openDownloadModal}
         />
-        {this.state.selectedLayer && <DownloadModal
-          show={this.state.showModal}
-          onHide={() => {
-            // Clear selected area
-            this.state.drawLayer.setSource(new VectorSource({features: []}));
-            this.setState({showModal: false, download: false});
-          }}
-          selectedProduct={this.state.selectedProduct}
-          selectedLayer={this.state.selectedLayer}
-          downloadImage={this.downloadImage}
-          downloadAnimation={this.downloadAnimation}
-          layers={overlays}
-          loading={this.state.loading}
-        />}
+        {/*{this.state.selectedLayer && <DownloadModal*/}
+        {/*  show={this.state.showModal}*/}
+        {/*  onHide={() => {*/}
+        {/*    // Clear selected area*/}
+        {/*    this.state.drawLayer.setSource(new VectorSource({features: []}));*/}
+        {/*    this.setState({showModal: false, download: false});*/}
+        {/*  }}*/}
+        {/*  selectedProduct={this.state.selectedProduct}*/}
+        {/*  selectedLayer={this.state.selectedLayer}*/}
+        {/*  downloadImage={this.downloadImage}*/}
+        {/*  downloadAnimation={this.downloadAnimation}*/}
+        {/*  layers={overlays}*/}
+        {/*  loading={this.state.loading}*/}
+        {/*/>}*/}
       </div>
     );
   }
